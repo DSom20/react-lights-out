@@ -27,7 +27,7 @@ import "./Board.css";
  *
  **/
 
-function Board({ nrows=2, ncols=2, chanceLightStartsOn=.5}) {
+function Board({ nrows = 3, ncols = 3, chanceLightStartsOn = .5 }) {
   const [board, setBoard] = useState(createBoard());
 
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
@@ -35,10 +35,10 @@ function Board({ nrows=2, ncols=2, chanceLightStartsOn=.5}) {
     let initialBoard = [];
     // TODO: create array-of-arrays of true/false values
     // DONE; (refactor though)
-    for(let i = 0; i < nrows; i++) {
+    for (let i = 0; i < nrows; i++) {
       initialBoard.push([]);
-      for(let j = 0; j < ncols; j++) {
-        initialBoard[i].push(Math.random() <= chanceLightStartsOn ? true : false);
+      for (let j = 0; j < ncols; j++) {
+        initialBoard[i].push(Math.random() <= chanceLightStartsOn);
       }
     }
     return initialBoard;
@@ -80,6 +80,7 @@ function Board({ nrows=2, ncols=2, chanceLightStartsOn=.5}) {
 
   function flipCellsAround(coord) {
     setBoard(oldBoard => {
+
       const [y, x] = coord.split("-").map(Number);
 
       const flipCell = (y, x, boardCopy) => {
@@ -93,11 +94,11 @@ function Board({ nrows=2, ncols=2, chanceLightStartsOn=.5}) {
       let newBoard = oldBoard.map(row => row.map(cell => cell));
 
       // TODO: in the copy, flip this cell and the cells around it
-      flipCell(y,x, newBoard);
-      flipCell(y+1,x, newBoard);
-      flipCell(y-1,x, newBoard);
-      flipCell(y,x+1, newBoard);
-      flipCell(y,x-1, newBoard);
+      flipCell(y, x, newBoard);
+      flipCell(y + 1, x, newBoard);
+      flipCell(y - 1, x, newBoard);
+      flipCell(y, x + 1, newBoard);
+      flipCell(y, x - 1, newBoard);
 
       // TODO: return the copy
       return newBoard;
@@ -108,10 +109,10 @@ function Board({ nrows=2, ncols=2, chanceLightStartsOn=.5}) {
 
 
   // TODO
-  let tableboard = board.map((row, rowInd) => 
-    <tr>
-      {row.map((cellVal, cellInd) => 
-        <Cell isLit={cellVal} flipCellsAroundMe={() => flipCellsAround(`${rowInd}-${cellInd}`)} />)
+  let tableboard = board.map((row, rowInd) =>
+    <tr key={rowInd}>
+      {row.map((cellVal, cellInd) =>
+        <Cell key={`${rowInd}${cellInd}`} isLit={cellVal} flipCellsAroundMe={() => flipCellsAround(`${rowInd}-${cellInd}`)} />)
       }
     </tr>
   );
@@ -124,9 +125,11 @@ function Board({ nrows=2, ncols=2, chanceLightStartsOn=.5}) {
   return (
     <div>
       <h1>Lights Out Game</h1>
-      {hasWon() ? 
-        <p>You Won!</p> : 
-        <table>{tableboard}</table>
+      {hasWon() ?
+        <p>You Won!</p> :
+        <table><tbody>
+          {tableboard}
+        </tbody></table>
       }
     </div>
   )
